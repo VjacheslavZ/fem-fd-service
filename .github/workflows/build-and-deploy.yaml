@@ -55,7 +55,7 @@ jobs:
       DOCKERIZE_URL: ${{ secrets.GOOSE_DBSTRING }}
       GOOSE_DBSTRING: ${{ secrets.GOOSE_DBSTRING }}
       GOOSE_DRIVER: ${{ vars.GOOSE_DRIVER }}
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     needs:
       - test
     runs-on: ubuntu-latest
@@ -65,3 +65,4 @@ jobs:
       - run: make build-image-pull
       - run: make build-image-migrate
       - run: make build-image-promote
+      - run: make deploy

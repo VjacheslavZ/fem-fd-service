@@ -5,6 +5,8 @@ AWS_ECR_DOMAIN := $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_DEFAULT_REGION).amazonaws.com
 GIT_SHA := $(shell git rev-parse HEAD)
 BUILD_IMAGE := $(AWS_ECR_DOMAIN)/fem-fd-service
 BUILD_TAG := $(if $(BUILD_TAG),$(BUILD_TAG),latest)
+ECS_CLUSTER := default
+ECS_SERVICE := fem-fd-service
 DOCKERIZE_HOST := $(shell echo $(GOOSE_DBSTRING) | cut -d "@" -f 2 | cut -d ":" -f 1)
 DOCKERIZE_URL := tcp://$(if $(DOCKERIZE_HOST),$(DOCKERIZE_HOST):5432,localhost:5432)
 .DEFAULT_GOAL := build
@@ -74,6 +76,18 @@ build-image-promote:
 	docker image tag $(BUILD_IMAGE):$(GIT_SHA) $(BUILD_IMAGE):$(BUILD_TAG)
 	docker image push $(BUILD_IMAGE):$(BUILD_TAG)
 
+deploy:
+	aws ecs update-service \
+		--region $(AWS_DEFAULT_REGION) \
+		--cluster $(ECS_CLUSTER) \
+		--service $(ECS_SERVICE) \
+		--force-new-deployment \
+		--no-cli-pager
+	aws ecs wait services-stable \
+		--region $(AWS_DEFAULT_REGION) \
+		--cluster $(ECS_CLUSTER) \
+		--services $(ECS_SERVICE)
+
 down:
 	docker compose down --remove-orphans --volumes
 
@@ -91,4 +105,5 @@ migrate-validate:
 
 start: build
 	./goals
+
 

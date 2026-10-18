@@ -65,3 +65,4 @@ jobs:
       - run: make build-image-pull
       - run: make build-image-migrate
       - run: make build-image-promote
+      - run: make deploy

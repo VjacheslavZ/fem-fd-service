@@ -9,3 +9,4 @@ crash.log
 overrides.txt
 *.iml
 .idea/
+/goals

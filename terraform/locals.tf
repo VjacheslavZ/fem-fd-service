@@ -1,3 +1,3 @@
 locals {
-  bastion_ingress = ["<ip-adress>/32"]
+  bastion_ingress = var.bastion_ingress
 }

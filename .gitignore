@@ -1,1 +1,9 @@
 .env
+
+*.tfplan
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform
+crash.log
+overrides.txt
